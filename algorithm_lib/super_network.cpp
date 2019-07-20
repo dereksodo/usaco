@@ -9,22 +9,26 @@ using namespace std;
 #else
 	#define debug(...)
 #endif
-const int maxn = 200005;
-const int maxn2 = maxn / 2;
+const int maxn = 100005;
 const int inf = 0x3f3f3f3f;
 struct edge{
 	int to,next,flow,cost;
-}e[maxn];
-int f[maxn2],head[maxn2],dist[maxn2],vis[maxn2],pre[maxn2],last[maxn2],arcs[maxn2],surplus[maxn2];
-int dep[maxn2],gap[maxn2],h[maxn2];
+}e[maxn << 1];
+int f[maxn],head[maxn],dist[maxn],vis[maxn],pre[maxn],last[maxn],arcs[maxn],surplus[maxn];
+int dep[maxn],gap[maxn],h[maxn];
 int cnt,n,m;
-void addedge(int x,int y,int flow,int cost)
+void addedge(int x,int y,int flow,int cost = 0)
 {
 	e[cnt].to = y;
 	e[cnt].next = head[x];
 	e[cnt].flow = flow;
 	e[cnt].cost = cost;
 	head[x] = cnt++;
+	e[cnt].to = x;
+	e[cnt].next = head[y];
+	e[cnt].flow = 0;
+	e[cnt].cost = -cost;
+	head[y] = cnt++;
 }
 namespace ek{
 	bool spfa(int s,int t)
@@ -467,8 +471,9 @@ int main(int argc, char const *argv[])
 			{
 				int x,y,flow,cost;
 				scanf("%d%d%d",&x,&y,&flow/*,&cost*/);
-				addedge(x,y,flow,0);//x,y,flow,cost
-				addedge(y,x,0,0);//y,x,0,0
+				addedge(x,y,flow);
+				// addedge(x,y,flow,cost);//x,y,flow,cost
+				// addedge(y,x,0,-cost);//y,x,0,0
 			}
 		}
 		else if(c == 2)
