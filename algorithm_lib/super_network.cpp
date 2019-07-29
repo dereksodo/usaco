@@ -90,10 +90,11 @@ namespace ek{
 		}
 		return maxflow;
 	}
-	int main()
+	int main(int s,int t)
 	{
-		printf("%d\n",ek(1,m));
-		return 0;
+		int ret = ek(s,t);
+		printf("%d\n",ret);
+		return ret;
 	}
 };
 
@@ -119,7 +120,7 @@ namespace dinic{
 				}
 			}
 		}
-		for(int i = 1;i <= m; ++i)
+		for(int i = 1;i <= n; ++i)
 		{
 			debug("dep[%d] = %d\n",i,dep[i]);
 		}
@@ -166,14 +167,16 @@ namespace dinic{
 		}
 		return maxflow;
 	}
-	int main()
+	int main(int s,int t)
 	{
-		printf("%d\n",dinic(1,m));
-		return 0;
+		int ret = dinic(s,t);
+		printf("%d\n",ret);
+		return ret;
 	}
 };
 
 namespace sap{
+	//remember to memset the arcs to -1
 	void bfs(int s)
 	{
 		memset(dep,0x00,sizeof(dep));
@@ -223,7 +226,7 @@ namespace sap{
 		}
 		if(!(--gap[dep[u]]))
 		{
-			dep[s] = m + 1;
+			dep[s] = n + 1;
 		}
 		dep[u]++;
 		gap[dep[u]]++;
@@ -234,10 +237,10 @@ namespace sap{
 	{
 		int maxflow = 0;
 		bfs(t);
-		memcpy(&arcs[1],&head[1],sizeof(int) * m);
+		memcpy(&arcs[1],&head[1],sizeof(int) * (cnt + 1));
 		maxflow = dfs(s,s,t,inf);
 		debug("nowflow = %d\n",maxflow);
-		while(dep[s] <= m)
+		while(dep[s] <= n)
 		{
 			int cur = dfs(s,s,t,inf);
 			maxflow += cur;
@@ -245,9 +248,11 @@ namespace sap{
 		}
 		return maxflow;
 	}
-	int main()
+	int main(int s,int t)
 	{
-		printf("%d\n",sap(1,m));
+		int ret = sap(s,t);
+		printf("%d\n",ret);
+		return ret;
 	}
 };
 
@@ -325,9 +330,9 @@ namespace hlpp{
 	    {
 	        return 0;
 	    }
-	    h[s] = m;
+	    h[s] = n;
 	    memset(gap,0x00,sizeof(gap));
-	    for(int i = 1;i <= m; ++i)
+	    for(int i = 1;i <= n; ++i)
 	    {
 	        if(h[i] != inf)
 	        {
@@ -364,11 +369,11 @@ namespace hlpp{
 	            gap[h[v]]--;
 	            if(!gap[h[v]])
 	            {
-	                for(int i = 1;i <= m; ++i)
+	                for(int i = 1;i <= n; ++i)
 	                {
-	                    if(i != s && i != t && h[i] > h[v] && h[i] < (m + 1))
+	                    if(i != s && i != t && h[i] > h[v] && h[i] < (n + 1))
 	                    {
-	                        h[i] = m + 1;
+	                        h[i] = n + 1;
 	                    }
 	                }
 	            }
@@ -383,9 +388,11 @@ namespace hlpp{
 	    }
 	    return surplus[t];
 	}
-	int main()
+	int main(int s,int t)
 	{
-		printf("%d\n",hlpp(1,m));
+		int ret = hlpp(s,t);
+		printf("%d\n",ret);
+		return ret;
 	}
 };
 
@@ -430,10 +437,11 @@ namespace ff{
 			dfs(t,s,inf);
 		}
 	}
-	int main()
+	int main(int s,int t)
 	{
 		ff(1,m);
 		printf("%d\n",maxflow);
+		return maxflow;
 	}
 };
 
@@ -459,15 +467,16 @@ int main(int argc, char const *argv[])
 	while(1)
 	{
 		int c = ShowMenu();
+		int s,t;
 		if(c == 1)
 		{
 			memset(head,-1,sizeof(head));
 			memset(vis,0x00,sizeof(vis));
-			printf("输入边数,终点\n");
+			printf("请输入点数,边数\n");
 			cin>>n>>m;
 			cnt = 0;
-			printf("输入顶点,顶点,边权\n");
-			for(int i = 0;i < n; ++i)
+			printf("请输入顶点,顶点,边权\n");
+			for(int i = 0;i < m; ++i)
 			{
 				int x,y,flow,cost;
 				scanf("%d%d%d",&x,&y,&flow/*,&cost*/);
@@ -475,26 +484,29 @@ int main(int argc, char const *argv[])
 				// addedge(x,y,flow,cost);//x,y,flow,cost
 				// addedge(y,x,0,-cost);//y,x,0,0
 			}
+			printf("请输入起点,终点\n");
+			cin>>s>>t;
 		}
 		else if(c == 2)
 		{
-			ek::main();
+			ek::main(s,t);
 		}
 		else if(c == 3)
 		{
-			dinic::main();
+			dinic::main(s,t);
 		}
 		else if(c == 4)
 		{
-			sap::main();
+			memset(arcs,-1,sizeof(arcs));
+			sap::main(s,t);
 		}
 		else if(c == 5)
 		{
-			hlpp::main();
+			hlpp::main(s,t);
 		}
 		else if(c == 6)
 		{
-			ff::main();
+			ff::main(s,t);
 		}
 		else
 		{
