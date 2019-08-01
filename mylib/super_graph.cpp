@@ -657,9 +657,15 @@ int ShowMenu()
     printf("| 17.exit				    |\n");
     printf("---------------------------------------------\n");
     printf("请选择想要进行的操作:\n");
-    int choose = 0;
-    cin>>choose;
-    return choose % 18;
+    int choose;
+    while(cin>>choose)
+    {
+    	if(choose >= 1 || choose <= 17)
+    	{
+    		break;
+    	}
+    }
+    return choose;
 }
 int main(int argc,char const *argv[])
 {
