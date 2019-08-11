@@ -65,10 +65,11 @@ int solve(int num)
 }
 int main(int argc, char const *argv[])
 {
-	// freopen("cowxor.in","r",stdin);
-	// freopen("cowxor.out","w",stdout);
+	freopen("cowxor.in","r",stdin);
+	freopen("cowxor.out","w",stdout);
 	int n;
 	scanf("%d",&n);
+	node = 0;
 	for(int i = 0;i < n; ++i)
 	{
 		scanf("%d",&a[i]);
@@ -82,10 +83,22 @@ int main(int argc, char const *argv[])
 	for(int i = 0;i < n; ++i)
 	{
 		int j = solve(i);
-		if((b[i] ^ b[j]) > ans)
+		if(i == j)
 		{
-			ans = b[i] ^ b[j];
-			ansed = i,ansst = j + 1;
+			if(a[i] > ans)
+			{
+				ans = a[i];
+				ansed = i,ansst = j;
+			}
+		}
+		else
+		{
+			int ret = b[i] ^ b[j];
+			if(ret > ans)
+			{
+				ans = ret;
+				ansed = i,ansst = j + 1;
+			}
 		}
 		insert(i);
 	}
