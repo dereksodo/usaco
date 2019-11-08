@@ -25,84 +25,72 @@ typedef long long ll;
 #else
 	#define debug(...)
 #endif
-const int maxn = 20005;
-char a[maxn],s[maxn << 1],b[maxn << 1];
-int pal[maxn << 1];
-int n;
-map<int,int> mp,mp2;
-pair<int,int> manacher()
+const int maxn = 400005;
+string a;
+char tem[85];
+int pos[maxn];
+char arr[maxn];
+int P[maxn];
+int e;
+bool isch(char ch)
 {
-	s[0] = '~';
-	s[1] = '#';
-	for(int i = 0;i < n; ++i)
+	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+int manacher()
+{
+	int len = 2 * e + 1;
+	int id = 0,mx = 0;
+	int outlen = 0,output = 0;
+	for(int i = 1;i <= len; ++i)
 	{
-		s[i * 2 + 2] = a[i];
-		mp[i * 2 + 2] = i;
-		s[i * 2 + 3] = '#';
+		P[i] = (mx > i) ? min(mx - i,P[2 * id - i]) : 0;
+		while(arr[i + P[i] + 1] == arr[i - P[i] - 1])
+		{
+			++P[i];
+		}
+		if(i + P[i] > mx)
+		{
+			mx = i + P[i];
+			id = i;
+		}
+		if(P[i] > outlen)
+		{
+			output = i;
+			outlen = P[i];
+		}
 	}
-	n = n * 2 + 2;
-	// printf("%s\n",s);
-	int maxright = 0,mid = 0;
-	int ans = 0;
-	int p = 0;
-	for(int i = 1;i < n; ++i)
-	{
-		if(i < maxright)
-		{
-			pal[i] = min(pal[(mid << 1) - i],maxright - i);
-		}
-		else
-		{
-			pal[i] = 1;
-		}
-		while(s[i + pal[i]] == s[i - pal[i]])
-		{
-			pal[i]++;
-		}
-		if(pal[i] + i > maxright)
-		{
-			maxright = pal[i] + i;
-			mid = i;
-		}
-		if(pal[i] > ans)
-		{
-			// printf("s[%d] = %c\n",i,s[i]);
-			// printf("pal[%d] = %d\n",i,pal[i]);
-			p = i;
-			ans = pal[i];
-		}
-		// printf("pal[%d] = %d\n",i,pal[i]);
-	}
-	return make_pair(mp[p] - (ans - 2) / 2,ans - 1);
+	return output;
 }
 int main(int argc, char const *argv[])
 {
 	freopen("calfflac.in","r",stdin);
 	freopen("calfflac.out","w",stdout);
-	n = 0;
-	int bn = 0;
-	char c;
-	while(scanf("%c",&c) != EOF)
+	while(cin.getline(tem,82,'\n') && !cin.eof())
 	{
-		b[bn++] = c;
-		if(isalpha(c))
+		a += tem;
+		a += "\n";
+	}
+	arr[0] = '$';
+	arr[1] = '#';
+	for(int i = 0;i < a.size(); ++i)
+	{
+		if(isch(a[i]))
 		{
-			a[n++] = tolower(c);
-			mp2[n - 1] = bn - 1;
+			pos[e] = i;
+			arr[2 * e + 2] = (a[i] <= 'Z' ? 'a' + a[i] - 'A' : a[i]);
+			arr[2 * e + 3] = '#';
+			++e;
 		}
 	}
-	pair<int,int> res = manacher();
-	// printf("Res.first = %d(%c),res.second = %d\n",res.first,a[res.first],res.second);
-	printf("%d\n",res.second);
-	for(int i = mp2[res.first];res.second; ++i)
+	arr[2 * e + 2] = '$';
+	int centre = manacher();
+	int st = (centre - P[centre] - 1) / 2;
+	int ed = (centre + P[centre] - 3) / 2;
+	cout<<P[centre]<<endl;
+	for(int i = pos[st];i <= pos[ed]; ++i)
 	{
-		// printf("i = %d\n",i);
-		if(isalpha(b[i]))
-		{
-			res.second--;
-		}
-		printf("%c",b[i]);
+		cout<<a[i];
 	}
-	printf("\n");
+	cout<<endl;
 	return 0;
 }
